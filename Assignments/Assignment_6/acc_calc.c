@@ -27,11 +27,20 @@ double moonVx = initMoon->vx;
 double moonVy = initMoon->vy;
 
 double G=6.67259E-11;
+//Compute the force on the satellite from the moon
+double moononsat=G*mSat*mMoon*(moonX-satX)/((moonX-satX)*(moonX-satX)*(moonX-satX));
 
-double fSatMoon=G*mSat*mMoon*(satX-moonX)/((satX-moonX)*(satX-moonX)*(satX-moonX));
+//Compute the force on the satellite from the Earth
+double earthonsat=G*mSat*mEarth*(satX)/(satX*satX*satX);
 
+// Compute the force on the Moon from the Earth
+
+double earthonmoon=G*mMoon*mEarth*(moonX)/(moonX*moonX*moonX);
+
+printf("Force values of %d, %d, and %d \n", moononsat,earthonsat,earthonmoon);
 
 
 return;
 
 }
+
