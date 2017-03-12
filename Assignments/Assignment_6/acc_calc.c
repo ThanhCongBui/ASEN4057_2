@@ -28,7 +28,8 @@ double moonVy = initMoon->vy;
 
 double G=6.67259E-11;
 
-fSatMoon=
+double fSatMoon=G*mSat*mMoon*(satX-moonX)/((satX-moonX)*(satX-moonX)*(satX-moonX));
+
 
 
 return;
