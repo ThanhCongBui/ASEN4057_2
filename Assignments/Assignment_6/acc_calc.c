@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include "accHeader.h"
 void accCalc(struct initSat, struct initMoon, struct outSat, struct outMoon) {
 
 printf("Unpacking structures");
@@ -27,18 +27,34 @@ double moonVx = initMoon->vx;
 double moonVy = initMoon->vy;
 
 double G=6.67259E-11;
+
 //Compute the force on the satellite from the moon
-double moononsat=G*mSat*mMoon*(moonX-satX)/((moonX-satX)*(moonX-satX)*(moonX-satX));
+
+double moononsatX=G*mSat*mMoon*(moonX-satX)/((moonX-satX)*(moonX-satX)*(moonX-satX));
+double moononsatY=G*mSat*mMoon*(moonY-satY)/((moonY-satY)*(moonY-satY)*(moonY-satY));
 
 //Compute the force on the satellite from the Earth
-double earthonsat=G*mSat*mEarth*(satX)/(satX*satX*satX);
+
+double earthonsatX=G*mSat*mEarth*(satX)/(satX*satX*satX);
+double earthonsatY=G*mSat*mEarth*(satY)/(satY*satY*satY);
 
 // Compute the force on the Moon from the Earth
 
-double earthonmoon=G*mMoon*mEarth*(moonX)/(moonX*moonX*moonX);
+double earthonmoonX=G*mMoon*mEarth*(moonX)/(moonX*moonX*moonX);
+double earthonmoonY=G*mMoon*mEarth*(moonY)/(moonY*moonY*moonY);
+double satAx = outSat->x;
+double satAy = outSat->y;
 
-printf("Force values of %d, %d, and %d \n", moononsat,earthonsat,earthonmoon);
+double moonAx = outMoon->x;
+double moonAy = outMoon->y;
 
+satAx=(earthonsatX+moononsatX)/mSat;
+
+satAy=(earthonsatY+moononsatY)/mSat;
+
+moonAx=(earthonmoonX-moononsatX)/mMoon;
+
+moonAy=(earthonmoonY-moononsatY)/mMoon;
 
 return;
 
