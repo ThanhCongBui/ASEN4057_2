@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "accHeader.h"
-void accCalc(struct initSat, struct initMoon, struct outSat, struct outMoon) {
+
+
+void accCalc(struct initial sat, struct initial moon, struct output satOut, struct output moonOut ) {
 
 printf("Unpacking structures");
 //Define initial values
@@ -15,16 +17,16 @@ double rEarth=6371000;
 // output is going to be x y vx vy 
 // unpack variables
 
-double satX = initSat->x;
-double satY = initSat->y;
-double satVx = initSat->vx;
-double satVy = initSat->vy;
+double satX = sat.x;
+double satY = sat.y;
+double satVx = sat.vx;
+double satVy = sat.vy;
 
 
-double moonX = initMoon->x;
-double moonY = initMoon->y;
-double moonVx = initMoon->vx;
-double moonVy = initMoon->vy;
+double moonX = moon.x;
+double moonY = moon.y;
+double moonVx = moon.vx;
+double moonVy = moon.vy;
 
 double G=6.67259E-11;
 
@@ -42,11 +44,11 @@ double earthonsatY=G*mSat*mEarth*(satY)/(satY*satY*satY);
 
 double earthonmoonX=G*mMoon*mEarth*(moonX)/(moonX*moonX*moonX);
 double earthonmoonY=G*mMoon*mEarth*(moonY)/(moonY*moonY*moonY);
-double satAx = outSat->x;
-double satAy = outSat->y;
+double satAx;
+double satAy;
 
-double moonAx = outMoon->x;
-double moonAy = outMoon->y;
+double moonAx;
+double moonAy;
 
 satAx=(earthonsatX+moononsatX)/mSat;
 
@@ -55,6 +57,14 @@ satAy=(earthonsatY+moononsatY)/mSat;
 moonAx=(earthonmoonX-moononsatX)/mMoon;
 
 moonAy=(earthonmoonY-moononsatY)/mMoon;
+
+moonOut.x=moonAx;
+moonOut.y=moonAy;
+
+satOut.x=satAx;
+satOut.y=satAy;
+
+printf("Exited file \n");
 
 return;
 

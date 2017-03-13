@@ -3,40 +3,19 @@
 #ifndef _acc_calc_h
 #define _acc_calc_h
 
-struct initSat{
-double x;
-double y;
-double vx;
-double vy;
+struct initial{
+	double x;
+	double y;
+	double vx;
+	double vy;
 
 };
 
-struct initMoon{
+struct output{
 
-double x;
-double y; 
-double vx;
-double vy;
+	double x;
+	double y;
 
 };
-
-struct outSat{
-
-double x;
-double y;
-
-};
-
-
-struct outMoon{
-
-double x;
-double y;
-
-};
-
-extern void
-acc_calc(struct *initSat, struct *initMoon, struct *outSat, struct *outMoon);
-
 
 #endif
