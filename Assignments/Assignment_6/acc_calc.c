@@ -2,7 +2,7 @@
 #include "accHeader.h"
 
 
-void accCalc(struct initial sat, struct initial moon, struct output satOut, struct output moonOut ) {
+void acc_calc(struct initial *sat, struct initial *moon, struct output *satOut, struct output *moonOut ) {
 
 printf("Unpacking structures");
 //Define initial values
@@ -17,16 +17,16 @@ double rEarth=6371000;
 // output is going to be x y vx vy 
 // unpack variables
 
-double satX = sat.x;
-double satY = sat.y;
-double satVx = sat.vx;
-double satVy = sat.vy;
+double satX = sat->x;
+double satY = sat->y;
+double satVx = sat->vx;
+double satVy = sat->vy;
 
 
-double moonX = moon.x;
-double moonY = moon.y;
-double moonVx = moon.vx;
-double moonVy = moon.vy;
+double moonX = moon->x;
+double moonY = moon->y;
+double moonVx = moon->vx;
+double moonVy = moon->vy;
 
 double G=6.67259E-11;
 
@@ -44,6 +44,7 @@ double earthonsatY=G*mSat*mEarth*(satY)/(satY*satY*satY);
 
 double earthonmoonX=G*mMoon*mEarth*(moonX)/(moonX*moonX*moonX);
 double earthonmoonY=G*mMoon*mEarth*(moonY)/(moonY*moonY*moonY);
+// Initialize acceleration doubles
 double satAx;
 double satAy;
 
@@ -58,11 +59,12 @@ moonAx=(earthonmoonX-moononsatX)/mMoon;
 
 moonAy=(earthonmoonY-moononsatY)/mMoon;
 
-moonOut.x=moonAx;
-moonOut.y=moonAy;
+// Set acceleration values equal to correct component in struct
+moonOut->ax=moonAx;
+moonOut->ay=moonAy;
 
-satOut.x=satAx;
-satOut.y=satAy;
+satOut->ax=satAx;
+satOut->ay=satAy;
 
 printf("Exited file \n");
 
@@ -70,8 +72,9 @@ return;
 
 }
 
-int main(){
 
 
-return 0;
+void main (){
+
+return;
 }

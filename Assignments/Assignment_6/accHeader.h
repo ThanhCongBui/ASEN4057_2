@@ -12,10 +12,12 @@ struct initial{
 };
 
 struct output{
-
-	double x;
-	double y;
+	//acceleration in x and y
+	double ax;
+	double ay;
 
 };
+
+void acc_calc(struct initial *sat, struct initial *moon, struct output *satOut, struct output *moonOut );
 
 #endif
