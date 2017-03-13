@@ -7,8 +7,17 @@ struct input {
 	double y;
 	double dx;
 	double dy;
+	double time;
 };
 
-void euler(int timestep, struct input *body);
+
+struct output {
+
+	double x;
+	double y;
+	double time;
+};
+
+void euler(double timestep, struct input *objIn, struct output *objOut);
 
 #endif
