@@ -1,5 +1,18 @@
+#include <stdio.h>
+#include "eulerHeader.h"
+void euler( int timestep, struct input *body){
 
 
 
 
-double euler(int timestep, struct start 
+
+return;
+
+}
+
+int main(){
+
+euler(int 1,struct  input *body);
+
+return 0;
+}
