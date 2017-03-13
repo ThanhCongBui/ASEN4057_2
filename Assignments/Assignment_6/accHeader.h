@@ -13,6 +13,10 @@ struct initial{
 
 struct output{
 	//acceleration in x and y
+	double x;
+	double y;
+	double vx;
+	double vy;
 	double ax;
 	double ay;
 

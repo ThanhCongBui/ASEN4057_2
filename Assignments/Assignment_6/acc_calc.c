@@ -60,11 +60,23 @@ moonAx=(earthonmoonX-moononsatX)/mMoon;
 moonAy=(earthonmoonY-moononsatY)/mMoon;
 
 // Set acceleration values equal to correct component in struct
+moonOut->x = moon->x;
+moonOut->y = moon->y;
+moonOut->vx = moon->vx;
+moonOut->vy = moon->vy;
+
 moonOut->ax=moonAx;
 moonOut->ay=moonAy;
+// Important to note that output positions/velocities are the same as input values.
+// Need to run Euler's method to update these values completely
+satOut->x = sat->x;
+satOut->y = sat->y;
+satOut->vx = sat->vx;
+satOut->vy = sat->vy;
 
 satOut->ax=satAx;
 satOut->ay=satAy;
+
 
 printf("Exited file \n");
 

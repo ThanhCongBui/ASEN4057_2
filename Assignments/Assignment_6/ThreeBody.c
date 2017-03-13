@@ -1,18 +1,38 @@
 #include <stdio.h>
 #include "accHeader.h"
+#include "eulerHeader.h"
+
+double ThreeBody(double argc, char *argv[] ){
+
+struct initial *sat;
+struct initial *moon;
+struct output *satOut;
+struct output *moonOut;
+
+/*
+
+Recall initial is of format:
+
+	double x;
+	double y;
+	double vx;
+	double vy;
 
 
-double ThreeBody(double argc, char *argv[] )
-{
+and output is of format:
 
-if (argc == 2){
-
-printf("The argument supplied is %s\n",argv[1]);
+	double ax;
+	double ay;
 
 
-}
+*/
 
-printf("running");
+
+double timestep = 0.01;
+
+
+
+
 
 
 return 0;
