@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include "accHeader.h"
 #include "eulerHeader.h"
+#include <stdlib.h>
 
 int main(){
 
@@ -8,13 +9,15 @@ int main(){
 
 struct inEuler *myIn;
 
+myIn = malloc(sizeof(struct inEuler));
+
 myIn->x = 1;
 myIn->dx = 3;
 myIn->time = 1;
 
 
 struct outEuler *myOut;
-
+myOut = malloc(sizeof(struct outEuler));
 
 myOut->x = 0;
 myOut->time=0;

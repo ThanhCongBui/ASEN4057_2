@@ -1,5 +1,5 @@
-#ifndef _euler_c
-#define _euler_c
+#ifndef _euler_h
+#define _euler_h
 
 struct inEuler {
 
