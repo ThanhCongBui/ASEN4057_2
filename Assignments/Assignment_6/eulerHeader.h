@@ -12,6 +12,7 @@ struct inEuler {
 struct outEuler {
 
 	double x;
+	double dx;
 	double time;
 };
 

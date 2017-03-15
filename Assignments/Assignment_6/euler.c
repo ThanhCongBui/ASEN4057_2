@@ -8,6 +8,7 @@ objOut->time = objIn->time + timestep;
 
 objOut->x = objIn->x + timestep*(objIn->dx);
 
+objOut->dx = objIn->dx;
 return;
 
 }

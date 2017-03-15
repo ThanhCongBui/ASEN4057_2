@@ -22,12 +22,19 @@ myOut = malloc(sizeof(struct outEuler));
 myOut->x = 0;
 myOut->time=0;
 
-double timestep=10;
+double timestep=0.5;
 
 
+
+for (int i = 1; i<100000; i++){
 euler(timestep, myIn, myOut);
 
+myIn->x = myOut->x;
+myIn->dx = myOut->dx;
+myIn->time = myOut->time;
 
+i++;
+}
 
 printf("MyIn consists of values %f %f %f \n",myIn->x, myIn->dx,myIn->time);
 
