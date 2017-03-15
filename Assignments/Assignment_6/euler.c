@@ -2,14 +2,11 @@
 #include "eulerHeader.h"
 
 
-void euler( double timestep, struct input *objIn, struct output *objOut){
+void euler( double timestep, struct inEuler *objIn, struct outEuler *objOut){
 
 objOut->time = objIn->time + timestep;
 
 objOut->x = objIn->x + timestep*(objIn->dx);
-
-objOut->y = objIn->y + timestep*(objIn->dy);
-
 
 return;
 

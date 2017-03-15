@@ -1,23 +1,20 @@
 #ifndef _euler_c
 #define _euler_c
 
-struct input {
+struct inEuler {
 
 	double x;
-	double y;
-	double dx;
-	double dy;
+	double dx; 
 	double time;
 };
 
 
-struct output {
+struct outEuler {
 
 	double x;
-	double y;
 	double time;
 };
 
-void euler(double timestep, struct input *objIn, struct output *objOut);
+void euler(double timestep, struct inEuler *objIn, struct outEuler *objOut);
 
 #endif
