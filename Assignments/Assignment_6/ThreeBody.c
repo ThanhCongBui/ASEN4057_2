@@ -12,8 +12,6 @@ double main(double argc, char *argv[] ){
 
 //Manage the input values from *argv[]
 int problemDesired = atoi(argv[1]);
-int clearance = atoi(argv[2]);
-int tolerance = atoi(argv[3]);
 
 
 
