@@ -19,10 +19,10 @@ double rMoon = 1737100;
 double rEarth = 6371000;
 
 
-double distSM = sqrt( (satX-moonX)^2 + (satY-moonY)^2 );
-double distEM = sqrt( moonX^2 + moonY^2);
+double distSM = sqrt( (satX-moonX)*(satX-moonX)+ (satY-moonY)*(satY-moonY) );
+double distEM = sqrt( moonX*moonX + moonY*moonY);
 
-double distSE = sqrt( satX^2 + satY^2 );
+double distSE = sqrt( satX*satX + satY*satY );
 double lostSpace = 2*distEM;
 
 printf("For debugging purposes: \n");
