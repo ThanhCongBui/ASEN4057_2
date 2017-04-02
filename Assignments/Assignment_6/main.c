@@ -2,7 +2,8 @@
 #include "accHeader.h"
 #include "eulerHeader.h"
 #include <stdlib.h>
-
+#include <math.h>
+#include "exits.h"
 int main(){
 
 
