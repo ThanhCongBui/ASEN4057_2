@@ -8,7 +8,8 @@ struct initial{
 	double y;
 	double vx;
 	double vy;
-
+	double ax;
+	double ay;
 };
 
 struct output{

@@ -4,7 +4,7 @@
 #include "accHeader.h"
 #include "eulerHeader.h"
 #include "exits.h"
-
+#include "iterHeader.h"
 
 double iterateSolution(struct input *sat, struct input *moon, double clearance){
 
@@ -37,15 +37,26 @@ and run again.
 We might have to do this recursively instead of iterating for some set amount of iterates.
 I'm not too good with recursive programming but I think it'll be our best oppportunity here.
 
+
+
+myIn->x = sat->x;
+int conditionCheck = 0;
+while (conditionCheck == 0){
+
+euler(timestep, myIn,myOut)
+
+
+
+
+
+
+
+
+
+
+
+}
 */
-
-
-
-
-
-
-
-
 return 0;
 
 }
