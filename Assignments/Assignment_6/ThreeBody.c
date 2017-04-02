@@ -7,9 +7,16 @@
 #include "iterHeader.h"
 
 
-double main(double argc, char *argv[] ){
+double main(double argc,const char *argv[] ){
 
 
+//Manage the input values from *argv[]
+/*
+int problemDesired = atoi(argv[1]);
+int clearance = atoi(argv[2]);
+int tolerance = atoi(argv[3]);
+
+*/
 
 struct input *sat;
 sat = malloc(sizeof(struct input));
@@ -47,7 +54,7 @@ moon->vy = 1012.0715844*cos(42.5*3.14159265/180);
 
 
 double runIterate = 0;
-double clearance = 10000;
+
 //runIterate = iterateSolution(sat,moon,clearance);
 
 

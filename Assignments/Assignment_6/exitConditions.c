@@ -6,7 +6,7 @@
 #include <math.h>
 
 
-int exitConditions(struct position *sat, struct position *moon, double clearance){
+int exitConditions(struct position *sat, struct position *moon, int clearance){
 
 double satX = sat->x;
 double satY = sat->y;

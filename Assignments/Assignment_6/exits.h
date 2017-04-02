@@ -9,7 +9,7 @@ struct position{
 
 
 
-int exitConditions(struct position *sat, struct position *moon, double clearance);
+int exitConditions(struct position *sat, struct position *moon, int clearance);
 
 
 #endif
