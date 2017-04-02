@@ -7,16 +7,15 @@
 #include "iterHeader.h"
 
 
-double main(double argc,const char *argv[] ){
+double main(double argc, char *argv[] ){
 
 
 //Manage the input values from *argv[]
-/*
 int problemDesired = atoi(argv[1]);
 int clearance = atoi(argv[2]);
 int tolerance = atoi(argv[3]);
 
-*/
+
 
 struct input *sat;
 sat = malloc(sizeof(struct input));
