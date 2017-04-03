@@ -6,7 +6,7 @@
 #include "exits.h"
 #include "iterHeader.h"
 
-double iterateSolution(struct initial *sat, struct initial *moon, struct output *satOut, struct output *moonOut,  int clearance){
+double iterate(struct initial *sat, struct initial *moon, struct output *satOut, struct output *moonOut,  int clearance){
 
 
 

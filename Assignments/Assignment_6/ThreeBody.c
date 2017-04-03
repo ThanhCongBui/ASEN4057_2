@@ -52,23 +52,23 @@ out = malloc(sizeof(struct outEuler));
 double deltaVx = 0;
 double deltaVy = 0;
 
-sat->x = 340000000*cos(50*3.14159265/180);
-sat->y = 340000000*sin(50*3.14159265/180);
-sat->vx = 1000*cos(50*3.14159265/180) + deltaVx;
-sat->vy = 1000*sin(50*3.14159265/180) + deltaVy;
-sat->ax = 0;
-sat->ay = 0;
+satIn->x = 340000000*cos(50*3.14159265/180);
+satIn->y = 340000000*sin(50*3.14159265/180);
+satIn->vx = 1000*cos(50*3.14159265/180) + deltaVx;
+satIn->vy = 1000*sin(50*3.14159265/180) + deltaVy;
+satIn->ax = 0;
+satIn->ay = 0;
 
-moon->x = 384403000*cos(42.5*3.14159265/180);
-moon->y = 384403000*sin(42.5*3.14159265/180);
-moon->vx = -1012.0715844*sin(42.5*3.14159265/180); // this value is pulled from matlab code instead of dynamically calculating it
-moon->vy = 1012.0715844*cos(42.5*3.14159265/180);
+moonIn->x = 384403000*cos(42.5*3.14159265/180);
+moonIn->y = 384403000*sin(42.5*3.14159265/180);
+moonIn->vx = -1012.0715844*sin(42.5*3.14159265/180); // this value is pulled from matlab code instead of dynamically calculating it
+moonIn->vy = 1012.0715844*cos(42.5*3.14159265/180);
 
 
 double runIterate = 0;
 
 
-
+//runIterate = iterate(satIn, moonIn,satOut,moonOut, clearance); 
 
 
 
