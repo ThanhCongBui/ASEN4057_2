@@ -6,7 +6,7 @@
 #include "exits.h"
 #include "iterHeader.h"
 
-double iterateSolution(struct input *sat, struct input *moon, double clearance){
+double iterateSolution(struct initial *sat, struct initial *moon, struct output *satOut, struct output *moonOut,  int clearance){
 
 
 
@@ -21,7 +21,11 @@ velocity_update = euler(acceration);
 
 position_update = euler(velocity_update);
 
+*/
+acc_calc(satIn, moonIn, satOut, moonOut, clearance);
 
+
+/*
 check exitConditions()
 
 if == 0, continue. Otherwise update all structs and return out of this function. 
@@ -46,17 +50,12 @@ while (conditionCheck == 0){
 euler(timestep, myIn,myOut)
 
 
-
-
-
-
-
-
-
-
-
 }
 */
+
+
+void acc_calc(sat
+
 return 0;
 
 }

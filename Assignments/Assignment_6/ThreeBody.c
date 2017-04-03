@@ -27,16 +27,19 @@ if (argv[1] && argv[2] && argv[3]){
 }
 
 
-struct input *sat;
-sat = malloc(sizeof(struct input));
-struct input *moon;
-moon = malloc(sizeof(struct input));
 
 
-struct initial *satAcc;
-satAcc = malloc(sizeof(struct initial));
-struct initial *moonAcc;
-moonAcc = malloc(sizeof(struct initial));
+struct initial *satIn;
+satIn = malloc(sizeof(struct initial));
+struct initial *moonIn;
+moonIn = malloc(sizeof(struct initial));
+
+
+struct output *satOut;
+satOut = malloc(sizeof(struct output));
+struct output *moonOut;
+moonOut = malloc(sizeof(struct output));
+
 
 
 struct inEuler *in;
@@ -64,7 +67,6 @@ moon->vy = 1012.0715844*cos(42.5*3.14159265/180);
 
 double runIterate = 0;
 
-//runIterate = iterateSolution(sat,moon,clearance);
 
 
 
