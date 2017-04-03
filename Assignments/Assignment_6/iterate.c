@@ -22,9 +22,22 @@ velocity_update = euler(acceration);
 position_update = euler(velocity_update);
 
 */
-acc_calc(satIn, moonIn, satOut, moonOut);
+acc_calc(sat, moon, satOut, moonOut);
+
+double timestep = 0.1;
 
 
+struct inEuler *myIn;
+struct outEuler *myOut;
+myIn = malloc(sizeof(struct inEuler));
+myOut = malloc(sizeof(struct outEuler));
+
+myIn->x = sat->x;
+myIn->dx = sat->vx;
+myIn->time = 0;
+myOut;
+
+euler( timestep,myIn, myOut);
 
 
 
