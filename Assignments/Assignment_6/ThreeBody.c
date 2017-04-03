@@ -68,7 +68,7 @@ moonIn->vy = 1012.0715844*cos(42.5*3.14159265/180);
 double runIterate = 0;
 
 
-//runIterate = iterate(satIn, moonIn,satOut,moonOut, clearance); 
+runIterate = iterate(satIn, moonIn,satOut,moonOut, clearance); 
 
 
 
