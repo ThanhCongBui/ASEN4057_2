@@ -7,6 +7,20 @@
 #include "iterHeader.h"
 
 
+
+
+void ThreeBody(){
+
+
+
+return; 
+
+}
+
+
+
+
+
 double main(int argc, const char *argv[] ){
 
 
@@ -17,7 +31,7 @@ int problemDesired;
 int clearance;
 int tolerance;
 
-
+// Assign inputs to different variables.
 // For some strange reason, this piece is necessary to avoid seg faulting
 if (argv[1] && argv[2] && argv[3]){
 
@@ -27,7 +41,7 @@ if (argv[1] && argv[2] && argv[3]){
 }
 
 
-
+// Initialize memory where necessary for each different struct
 
 struct initial *satIn;
 satIn = malloc(sizeof(struct initial));
@@ -41,16 +55,19 @@ struct output *moonOut;
 moonOut = malloc(sizeof(struct output));
 
 
-
 struct inEuler *in;
 in = malloc(sizeof(struct inEuler));
 struct outEuler *out;
 out = malloc(sizeof(struct outEuler));
-// Now define all initial conditions. This might be cleaner in a separate file.
 
+
+
+// Now define all initial conditions. This might be cleaner in a separate file.
 
 double deltaVx = 0;
 double deltaVy = 0;
+// These following values are just directly inputted. It seemed cleaner than 
+// using multiple doubles with different values each.
 
 satIn->x = 340000000*cos(50*3.14159265/180);
 satIn->y = 340000000*sin(50*3.14159265/180);
