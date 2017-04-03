@@ -7,12 +7,24 @@
 #include "iterHeader.h"
 
 
-double main(double argc, char *argv[] ){
+double main(int argc, const char *argv[] ){
 
 
 //Manage the input values from *argv[]
-int problemDesired = atoi(argv[1]);
 
+
+int problemDesired;
+int clearance;
+int tolerance;
+
+
+// For some strange reason, this piece is necessary to avoid seg faulting
+if (argv[1] && argv[2] && argv[3]){
+
+	problemDesired = atoi(argv[1]);
+	clearance = atoi(argv[2]);
+	tolerance = atoi(argv[3]);
+}
 
 
 struct input *sat;
