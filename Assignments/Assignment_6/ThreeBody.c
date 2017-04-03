@@ -1,4 +1,4 @@
-﻿#include <stdio.h>
+#include <stdio.h>
 #include "accHeader.h"
 #include "eulerHeader.h"
 #include <math.h>

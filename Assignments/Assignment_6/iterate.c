@@ -35,9 +35,9 @@ myOut = malloc(sizeof(struct outEuler));
 myIn->x = sat->x;
 myIn->dx = sat->vx;
 myIn->time = 0;
-myOut;
 
-euler( timestep,myIn, myOut);
+
+euler(timestep, myIn, myOut);
 
 
 
