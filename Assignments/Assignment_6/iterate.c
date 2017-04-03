@@ -22,7 +22,10 @@ velocity_update = euler(acceration);
 position_update = euler(velocity_update);
 
 */
-acc_calc(satIn, moonIn, satOut, moonOut, clearance);
+acc_calc(satIn, moonIn, satOut, moonOut);
+
+
+
 
 
 /*
@@ -52,9 +55,6 @@ euler(timestep, myIn,myOut)
 
 }
 */
-
-
-void acc_calc(sat
 
 return 0;
 
