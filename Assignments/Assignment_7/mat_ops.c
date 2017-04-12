@@ -1,4 +1,4 @@
-#include <stdlib.h>
+﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 
@@ -47,12 +47,33 @@ int main( int argc, char * argv[]){
 	for (ii = 0; ii < c_m; ii++)
 		for (jj = 0; jj < c_n; jj++)
 			fscanf(CFile,"%lf",&C[ii*c_n*jj]);
-
+//Close all the files
 fclose(AFile);
 fclose(BFile);
 fclose(CFile);
 
+//Create char* with the contents of the output name (i.e. A_mult_B)
 
+char * full_nameXX;
+char * full_nameXP;
+char * full_namePM;
+char * full_nameXM;
+char * full_nameMX;
+char * fillerP = "_plus_";
+char * fillerM = "_minus_";
+char * fillerX = "_mult_";
+
+// Allocate memory for each string that is going to hold a filename
+full_nameXX = malloc(strlen(argv[1]) + strlen(fillerX) + strlen(argv[2]) + strlen(fillerX) + strlen(argv[3]));
+
+full_nameXP = malloc(strlen(argv[1]) + strlen(fillerX) + strlen(argv[2]) + strlen(fillerP) + strlen(argv[3]));
+
+full_namePM = malloc(strlen(argv[1]) + strlen(fillerP) + strlen(argv[2]) + strlen(fillerM) + strlen(argv[3]));
+
+full_nameXM = malloc(strlen(argv[1]) + strlen(fillerX) + strlen(argv[2]) + strlen(fillerM) + strlen(argv[3]));
+
+full_nameMX = malloc(strlen(argv[1]) + strlen(fillerM) + strlen(argv[2]) + strlen(fillerX) + strlen(argv[3]));
+//Do matrix multiplication here
 
 return 0;
 }
