@@ -75,7 +75,7 @@ full_nameXM = malloc(strlen(argv[1]) + strlen(fillerX) + strlen(argv[2]) + strle
 full_nameMX = malloc(strlen(argv[1]) + strlen(fillerM) + strlen(argv[2]) + strlen(fillerX) + strlen(argv[3]));
 
 
-// First case. A*B*C. Check if A_n = B_m. Check if B_n = C_m. Overall dim will be A_m x C_n
+// First case. A*B*C
 
 if ((a_n == b_m) && (b_n == c_m))
 {
@@ -125,10 +125,10 @@ else { printf("Dimension mismatch, cannot compute A*B*C matrix operation. \n");}
 
 printf("Proceeding into the next section of code... \n");
 
-// Now do the same shit for the multiplication addition one
+// Second Case. A*B + C 
 if ((a_n == b_m) && (b_m == c_m) && (b_n == c_n))
 {
-	printf("Matrices are acceptable to multiply and add. Proceeding forward \n");
+	
 
 	//Create intermediate matrices to avoid overwriting the necessary matrices
 	double * Mid;
@@ -136,14 +136,13 @@ if ((a_n == b_m) && (b_m == c_m) && (b_n == c_n))
 	Final = malloc(c_m*c_n*sizeof(double));
 	Mid=malloc(a_n*b_m*sizeof(double));
 	
-	printf("Matrix memory allocation worked \n");
 
 	//First iteration to populate A*B
-	printf("First CBLAS call worked \n");
+	
 	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,a_m,b_m,c_m,1.0,A,a_m,B,b_m,0,Mid,c_m);
 
-	//Second iteration to populate Mid+C
-	printf("Entering possibly troublesome section... \n");
+	//Second iteration to populate Mid+C. Simple matrix addition iteration
+	
 	for (int ii = 0; ii<c_m; ii++){
 		for (int jj = 0; jj<c_n; jj++){
 
@@ -157,7 +156,7 @@ if ((a_n == b_m) && (b_m == c_m) && (b_n == c_n))
 		}
 
 
-printf("Exited and trying to print things to file \n");
+
 FILE *XPFile; 
 	strcpy(full_nameXP,argv[1]);
 	strcat(full_nameXP,fillerX);
@@ -174,7 +173,66 @@ FILE *XPFile;
 				fprintf(XPFile,"%lf ",Final[ii*c_n+jj]);
 				fprintf(XPFile,"\n");
 
-		
+			}
+		fclose(XPFile);
+		free(Final);
+		free(Mid);
+		free(full_nameXP);
+
+}
+
+else { printf("Dimension mismatch, cannot compute A*B*C matrix operation. \n");}
+
+
+
+// Third Case. A + B*C 
+
+if ((b_n == c_m) && (a_m == b_m) && (c_n == a_n))
+{
+	
+
+	//Create intermediate matrices to avoid overwriting the necessary matrices
+	double * Mid;
+ 	double * Final;
+	Final = malloc(c_m*c_n*sizeof(double));
+	Mid=malloc(a_n*b_m*sizeof(double));
+	
+
+	//First iteration to populate A*B
+	
+	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,a_m,b_m,c_m,1.0,A,a_m,B,b_m,0,Mid,c_m);
+
+	//Second iteration to populate Mid+C. Simple matrix addition iteration
+	
+	for (int ii = 0; ii<c_m; ii++){
+		for (int jj = 0; jj<c_n; jj++){
+
+			Final[ii*c_n+jj] = Mid[ii*c_n+jj] + C[ii*c_n+jj];
+				
+			}
+
+
+
+
+		}
+
+
+
+FILE *XPFile; 
+	strcpy(full_nameXP,argv[1]);
+	strcat(full_nameXP,fillerX);
+	strcat(full_nameXP,argv[2]);
+	strcat(full_nameXP,fillerP);
+	strcat(full_nameXP,argv[3]);
+	XPFile = fopen(full_nameXP,"w");
+	fprintf(XPFile,"%d %d\n",a_m,c_n);
+	
+		for (int ii = 0; ii < a_m; ii++){
+
+			for (int jj = 0; jj < c_n; jj++)
+
+				fprintf(XPFile,"%lf ",Final[ii*c_n+jj]);
+				fprintf(XPFile,"\n");
 
 			}
 		fclose(XPFile);
@@ -186,7 +244,11 @@ FILE *XPFile;
 
 else { printf("Dimension mismatch, cannot compute A*B*C matrix operation. \n");}
 
-//I need to do A*B*C(DONE), A*B + C, A + B*C, A*B - C, A - B*C and save each in a separate text file
+
+
+
+
+//I need to do A*B*C(DONE), A*B + C (DONE), A + B*C, A*B - C, A - B*C and save each in a separate text file
 
 //For multiplication, A_n = B_m. For add/subt, A and B must be same size
 
