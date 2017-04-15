@@ -1,7 +1,8 @@
 ﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-
+#include <math.h>
+#include <cblas.h>
 int main( int argc, char * argv[]){
 
 	//Declare files
@@ -74,6 +75,15 @@ full_nameXM = malloc(strlen(argv[1]) + strlen(fillerX) + strlen(argv[2]) + strle
 
 full_nameMX = malloc(strlen(argv[1]) + strlen(fillerM) + strlen(argv[2]) + strlen(fillerX) + strlen(argv[3]));
 //Do matrix multiplication here
+
+printf("Values are: %d",a_m);
+
+//cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,a_m,1.0,);
+
+//I need to do A*B*C, A*B + C, A + B*C, A*B - C, A - B*C and save each in a separate text file
+
+//For multiplication, A_n = B_m. For add/subt, A and B must be same size
+
 
 return 0;
 }
