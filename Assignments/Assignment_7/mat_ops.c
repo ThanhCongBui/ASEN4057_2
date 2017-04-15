@@ -1,8 +1,8 @@
-﻿#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
 #include <cblas.h>
+#include <stdlib.h>
 int main( int argc, char * argv[]){
 
 	//Declare files
@@ -27,7 +27,6 @@ int main( int argc, char * argv[]){
 	double * A;
 	double * B;
 	double * C;
-
 	//Create memory for matrices
 	A = malloc(a_m*a_n*sizeof(double));
 	B = malloc(b_m*b_n*sizeof(double));
@@ -47,7 +46,7 @@ int main( int argc, char * argv[]){
 
 	for (ii = 0; ii < c_m; ii++)
 		for (jj = 0; jj < c_n; jj++)
-			fscanf(CFile,"%lf",&C[ii*c_n*jj]);
+			fscanf(CFile,"%lf",&C[ii*c_n+jj]);
 //Close all the files
 fclose(AFile);
 fclose(BFile);
@@ -74,17 +73,60 @@ full_namePM = malloc(strlen(argv[1]) + strlen(fillerP) + strlen(argv[2]) + strle
 full_nameXM = malloc(strlen(argv[1]) + strlen(fillerX) + strlen(argv[2]) + strlen(fillerM) + strlen(argv[3]));
 
 full_nameMX = malloc(strlen(argv[1]) + strlen(fillerM) + strlen(argv[2]) + strlen(fillerX) + strlen(argv[3]));
-//Do matrix multiplication here
 
-printf("Values are: %d",a_m);
 
-//cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,a_m,1.0,);
+// First case. A*B*C. Check if A_n = B_m. Check if B_n = C_m. Overall dim will be A_m x C_n
+
+if ((a_n == b_m) && (b_n == c_m))
+{
+	//Create intermediate matrices to avoid overwriting the necessary matrices
+	double * Mid;
+ 	double * Final;
+	Final = malloc(a_m*c_n*sizeof(double));
+	Mid=malloc(a_n*b_m*sizeof(double));
+
+	//First iteration to populate A*B
+	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,a_m,b_m,c_m,1.0,A,a_m,B,b_m,0,Mid,c_m);
+
+	//Second iteration to populate Mid*C
+
+	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,a_m,b_m,c_m,1.0,Mid,a_n,C,c_m,0.0,Final,c_n);
+
+
+FILE *XXFile; 
+	strcpy(full_nameXX,argv[1]);
+	strcat(full_nameXX,fillerX);
+	strcat(full_nameXX,argv[2]);
+	strcat(full_nameXX,fillerX);
+	strcat(full_nameXX,argv[3]);
+	XXFile = fopen(full_nameXX,"w");
+	fprintf(XXFile,"%d %d\n",a_m,c_n);
+	
+		for (int ii = 0; ii < a_m; ii++){
+
+			for (int jj = 0; jj < c_n; jj++)
+
+				fprintf(XXFile,"%lf ",Final[ii*c_n+jj]);
+				fprintf(XXFile,"\n");
+
+		
+
+			}
+		fclose(XXFile);
+		free(Final);
+		free(Mid);
+		free(full_nameXX);
+
+}
+
+else { printf("Dimension mismatch, cannot compute A*B*C matrix operation. \n");}
 
 //I need to do A*B*C, A*B + C, A + B*C, A*B - C, A - B*C and save each in a separate text file
 
 //For multiplication, A_n = B_m. For add/subt, A and B must be same size
 
-
+// Compile with gcc 'filename.c' -llapacke -llapack -lblas -lgfortran
 return 0;
 }
+
 
