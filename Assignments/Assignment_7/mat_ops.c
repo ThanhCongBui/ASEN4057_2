@@ -85,11 +85,12 @@ if ((a_n == b_m) && (b_n == c_m))
 	Final = malloc(a_m*c_n*sizeof(double));
 	Mid=malloc(a_n*b_m*sizeof(double));
 
-	//First iteration to populate A*B
+	//First iteration to populate A*B 
+	printf("First Case, First Call \n");
 	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,a_m,b_m,c_m,1.0,A,a_m,B,b_m,0,Mid,c_m);
 
 	//Second iteration to populate Mid*C
-
+	printf("First Case, Second Call \n");
 	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,a_m,b_m,c_m,1.0,Mid,a_n,C,c_m,0.0,Final,c_n);
 
 
@@ -135,7 +136,7 @@ if ((a_n == b_m) && (b_m == c_m) && (b_n == c_n))
 	
 
 	//First iteration to populate A*B
-	
+	printf("Second Case \n");
 	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,a_m,b_m,c_m,1.0,A,a_m,B,b_m,0,Mid,c_m);
 
 	//Second iteration to populate Mid+C. Simple matrix addition iteration
@@ -190,7 +191,7 @@ if ((b_n == c_m) && (a_m == b_m) && (c_n == a_n))
 	
 
 	//First iteration to populate B*C
-	
+	printf("Third Case \n");
 	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,b_m,c_m,a_m,1.0,B,b_m,C,c_m,0,Mid,a_m);
 
 	//Second iteration to populate A+Mid. Simple matrix addition iteration
@@ -245,7 +246,7 @@ if ((a_n == b_m) && (a_m == c_m) && (c_n == a_n))
 	
 
 	//First iteration to populate A*B
-	
+	printf("Fourth Case \n");
 	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,a_m,b_m,c_m,1.0,A,a_m,B,b_m,0,Mid,c_m);
 
 	//Second iteration to populate Mid-C. Simple matrix addition iteration
@@ -301,7 +302,7 @@ if ((b_n == c_m) && (a_m == b_m) && (c_n == a_n))
 	
 
 	//First iteration to populate B*C
-	
+	printf("Fifth Case \n");
 	cblas_dgemm(CblasRowMajor,CblasNoTrans,CblasNoTrans,b_m,c_m,a_m,1.0,B,b_m,C,c_m,0,Mid,a_m);
 
 	//Second iteration to populate A-Mid. Simple matrix addition iteration
