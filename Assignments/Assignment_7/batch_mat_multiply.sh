@@ -10,7 +10,7 @@ do
 	do
 		for fileC in $matrices
 		do
-			${asnm_7_Dir =}/a.out $fileA $fileB $fileC
+			${asnm_7_Dir}/a.out $fileA $fileB $fileC
 		done
 	done
 done
