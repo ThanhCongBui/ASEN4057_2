@@ -1,3 +1,4 @@
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -6,23 +7,10 @@
 #include <lapacke.h>
 
 
-int Build_LHS(){
+int Build_LHS(int cells_per_side,){
 
-
-/*From Evans' source code: 
-
-
-K is the LHS matrix of size zeros(nodes_per_side ^2)
-
-K is filled with various conductivity values which will be computed in the conductivity file. I probably 
-should write that one first.
-
-
-
-
-
-Well, conductivity
-*/
+// Build K matrix here. Need to know resolution of overall grid as well as x and y dimensions
+// Need to know Conductivity at each point, source (?) at each point, and BC at each point
 
 
 
