@@ -38,6 +38,17 @@ for (int ii = 0; ii < nodes_per_side; ii++){
 printf("Value is %d\n", index[2]);
 
 
+
+
+
+
+
+double *K[nodes_per_side*nodes_per_side][nodes_per_side*nodes_per_side];
+
+// Build_LHS(K, other stuff);
+
+
+
 return ;
 
 }
