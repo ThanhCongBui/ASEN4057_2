@@ -45,7 +45,7 @@ printf("Value is %d\n", index[2]);
 
 double *K[nodes_per_side*nodes_per_side][nodes_per_side*nodes_per_side];
 
-// Build_LHS(K, other stuff);
+ Build_LHS(K, index, problem_index, cells_per_side, x_array, y_array);
 
 
 
