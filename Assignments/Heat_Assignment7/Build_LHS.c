@@ -16,7 +16,7 @@ double h_MeshSize  = 1/cells_per_side;
 double* x_array;
 double* y_array;
 double nodes_per_side = cells_per_side + 1;
-
+ int nodes = cells_per_side+1;
 //make sure that x and y arrays have the correct dimensions
  x_array=malloc(nodes_per_side*sizeof(double));
  y_array = malloc(nodes_per_side*sizeof(double));
@@ -30,10 +30,22 @@ for (int ii = 0; ii < nodes_per_side; ii++){
  }
 // Hope that the arrays are correctly sized and populated.
 
+// Create indexing scheme that makes it possible to run through the
+// five point scheme in the overall K matrix calculation
  
+ double *index[nodes][nodes];
+ for (int ii = 0; ii < nodes_per_side; ii++){
+
+   for (int jj = 0; jj < nodes_per_side; jj++){
+
+     *index[ii][jj] = (ii-1)*nodes_per_side + jj;
+     
+   }
+ }
 
 
- double * K[3][3];
+ // Now the overall initialization can occur. I'll get to the K matrix
+ // later after putting in some work on building the 'f' heating vector RHS
 
 return 0;
 
