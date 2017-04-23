@@ -4,18 +4,17 @@
 #include <math.h>
 #include <cblas.h>
 #include <lapacke.h>
+#include "Build_RHS.h"
+#include "BC.h"
 
-int Build_RHS(double * F, int * index, int problem_index, int cells_per_side, double * x_array, double * y_array){
-
-  double h_MeshSize =/cells_per_side;
-  int nodes_per_side = cells_per_side+1;
+double *Build_RHS(int nodes_per_side, double *x, double *y, int **idx, int problem_index){
 
   
-    for (int ii = 0; ii < nodes_per_side * nodes_per_side; ii++){
+int center_node;
+double *f = malloc(nodes_per_side*sizeof(double*));
+		
 
-		// F[ii] = BC call 
-
-		}
+		
 
 
   return 0;

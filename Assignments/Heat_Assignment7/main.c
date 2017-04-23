@@ -23,32 +23,25 @@ double * x_array;
 double * y_array;
 x_array = malloc(nodes_per_side*sizeof(double));
 y_array = malloc(nodes_per_side*sizeof(double));
-int *index;
-index = malloc(nodes_per_side*nodes_per_side*sizeof(int));
-
-for (int ii = 0; ii < nodes_per_side; ii++){
-
-	for (int jj = 0; jj < nodes_per_side; jj++){
-
-		index[ii+jj] =(ii)*nodes_per_side + jj;
-		
-		}
-	}
-
-printf("Value is %d\n", index[2]);
 
 
 
 
+ int *index= malloc(nodes_per_side*nodes_per_side*sizeof(int*));
+
+ for (int ii = 1; ii < (nodes_per_side*nodes_per_side)+1; ii++){
+
+    index[ii] = ii; 
+   }
+ 
 
 
-
-double *K[nodes_per_side*nodes_per_side][nodes_per_side*nodes_per_side];
-
- Build_LHS(K, index, problem_index, cells_per_side, x_array, y_array);
+ for (int ii = 0; ii < (nodes_per_side*nodes_per_side); ii++){
 
 
-
+	printf("Current index value is %d \n",index[ii]);
+}	
+ 
 return ;
 
 }
