@@ -72,10 +72,11 @@ y_array[0] = 0;
  
  double **LHS_K = Build_LHS(nodes_per_side, x_array, y_array, index, problem_index);
  // Create the answer vector
- double *TEMP_ANSWER = malloc(pow(nodes_per_side,2)*sizeof(double));
+int n = nodes_per_side;
+ double *TEMP_ANSWER = malloc(n*n*sizeof(double));
  // Perform the matrix multiplication
  
- cblas_dgemm(CblasRowMajor,CblasTrans, CblasNoTrans, pow(nodes_per_side, 2), 1, pow(nodes_per_side, 2), 1.0, *LHS_K, pow(nodes_per_side, 2), RHS_F, pow(nodes_per_side, 2), 0.0, TEMP_ANSWER, pow(nodes_per_side, 2));
+ cblas_dgemm(CblasRowMajor,CblasTrans, CblasNoTrans, n*n, 1, n*n, 1.0, *LHS_K, n*n, RHS_F, n*n, 0.0, TEMP_ANSWER, n*n);
 
 
  // Write everything to a file
