@@ -67,14 +67,16 @@ y_array[0] = 0;
      *(index[ii] + jj) = ii*nodes_per_side + jj;
    }
  }
-
+ printf("Filling The RHS in");
  // Create the right hand side 
  double *RHS_F = Build_RHS(nodes_per_side, x_array, y_array, index, problem_index);
 
+ printf("Filling the LHS in");
 
  // Create the left hand side 
  
  double **LHS_K = Build_LHS(nodes_per_side, x_array, y_array, index, problem_index);
+ printf("Creating TEMPANSWER");
  // Create the answer vector
 int n = nodes_per_side;
  double *TEMP_ANSWER = malloc(n*n*sizeof(double));
