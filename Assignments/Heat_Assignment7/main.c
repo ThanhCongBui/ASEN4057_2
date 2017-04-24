@@ -18,30 +18,39 @@ problem_index = atoi(argv[2]);
 
 double h = 1/cells_per_side;
 int nodes_per_side = cells_per_side+1;
-printf("nodes value is %d \n",nodes_per_side);
-double * x_array;
-double * y_array;
+
+double *x_array;
+double *y_array;
 x_array = malloc(nodes_per_side*sizeof(double));
 y_array = malloc(nodes_per_side*sizeof(double));
 
 
 
 
- int *index= malloc(nodes_per_side*nodes_per_side*sizeof(int*));
+ int index[nodes_per_side][nodes_per_side] = 0;
+ // Set initial index matrix to all zeroes
+ for (int ii = 0; ii < nodes_per_side; ii++){
 
- for (int ii = 1; ii < (nodes_per_side*nodes_per_side)+1; ii++){
+   index[ii][ii] = 0;
 
-    index[ii] = ii; 
+ }
+// index = malloc(nodes_per_side*nodes_per_side*sizeof(int));
+ printf("Nodes is %d",nodes_per_side);
+ for (int ii = 1; ii < nodes_per_side+1; ii++){
+	for (int jj = 1; jj < nodes_per_side +1; jj++){
+    index[ii][jj] = (ii-1)*nodes_per_side + jj; 
    }
- 
+ }
 
 
- for (int ii = 0; ii < (nodes_per_side*nodes_per_side); ii++){
+ for (int ii = 0; ii < nodes_per_side; ii++){
+   for (int jj = 0; jj < nodes_per_side; jj++){
 
 
-	printf("Current index value is %d \n",index[ii]);
+	printf("Current index value is %d \n",index[ii][jj]);
 }	
- 
+ }
+
 return ;
 
 }
