@@ -8,8 +8,7 @@
 
 double BC( double xVal, int problem_index){
 
-	double temp;
-	temp = malloc(sizeof(double));
+  double temp;
 
 	if(problem_index == 1){
 
@@ -26,7 +25,7 @@ double BC( double xVal, int problem_index){
 	
 	if((problem_index == 2) || (problem_index == 3) || (problem_index == 4)){
 
-	  temp = 0.0;
+	  temp = 0;
 
 	}
 	
@@ -35,7 +34,7 @@ double BC( double xVal, int problem_index){
 
 	  temp = 343.15; // Kelvin. Note that the Celsius value in the document is 70 C. 
 
-
+	}
 
 return temp;
 

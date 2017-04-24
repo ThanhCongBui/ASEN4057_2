@@ -26,8 +26,10 @@ double *Build_RHS(int nodes_per_side, double *x, double *y, int **index, int pro
      else{
 
        f[center] = Source(nodes_per_side, x[ii], y[jj], problem_index);
-       
+        }
  }
+ }
+
 
   return f;
 

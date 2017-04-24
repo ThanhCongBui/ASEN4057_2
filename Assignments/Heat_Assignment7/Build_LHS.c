@@ -14,7 +14,8 @@ double **Build_LHS( int nodes_per_side, double *x, double *y, int **index, int p
   int kT, kR, kB, kL;
 
 
-  // Create K matrix that will be later multiplied by d temperature values or something like that
+  // Create K matrix that will later be inverted in the main file and then
+  // multiplied by the right hand side to determine d, the temperature vals
 
   int n = nodes_per_side; // nodes_per_side was too many letters to type
   int c = nodes_per_side - 1; //cells_per_side also too long, just make a variable c
