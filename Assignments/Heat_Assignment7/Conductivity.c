@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <math.h> 
 #include <cblas.h>
-#include <Conductivity.h>
+#include "Conductivity.h"
 int Conductivity(int problem_index, double x, double  y){
 
 
