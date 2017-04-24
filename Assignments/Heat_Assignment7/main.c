@@ -32,11 +32,13 @@ int nodes_per_side = cells_per_side+1;
 double *x_array;
 double *y_array;
 // Give enough memory to x_array and y_array to span the whole size of the problem
+ printf("testing early stuff \n");
 x_array = malloc(nodes_per_side*sizeof(double));
 y_array = malloc(nodes_per_side*sizeof(double));
 x_array[0] = 0;
 y_array[0] = 0;
 
+ printf("Testing Populate Posn vectors \n");
  for (int ii = 0; ii < nodes_per_side; ii++){
 
    //Populate the position vectors x_array and y_array
@@ -47,14 +49,16 @@ y_array[0] = 0;
 
 
  // Create the index matrix
+ printf("Testing Index Matrix\n");
  int **index = (int**) calloc(nodes_per_side, sizeof(int*));
  index[0] = (int*) calloc(nodes_per_side, sizeof(int));
  
-
+ printf("testing prelim index filling \n");
  for (int ii = 1; ii < nodes_per_side; ii++){
 
    index[ii] = index[ii - 1] + nodes_per_side;
  }
+ printf("testing filling index\n");
  // Iterate like in the matlab code to populate the index matrix
  for (int ii = 0; ii < nodes_per_side; ii++){
 
