@@ -5,3 +5,6 @@ I'm now looking for the seg faults. All of the code that I have working on this 
 
 
 12:02--So the issue is with the indexing and the way I'm handling memory in there. Let's see if I can fix it
+
+
+12:24--I know where the issue is but I'm not sure how to fix it. Long week ahead and I'm going to get some sleep
