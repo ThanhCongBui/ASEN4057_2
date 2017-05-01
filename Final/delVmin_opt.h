@@ -1,8 +1,19 @@
 #ifndef _DELVMIN_OPT_H
 #define _DELVMIN_OPT_H
 #include <stdio.h>
-struct y_type{
 
+struct dydt_type{
+	double xs_dot;
+	double ys_dot;
+	double xm_dot;
+	double ym_dot;
+	double vxs_dot;
+	double vyx_dot;
+	double vxm_dot;
+	double vym_dot;
+};
+
+struct y_type{
 	double xs; 
 	double yx; 
 	double xm; 

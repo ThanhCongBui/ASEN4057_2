@@ -3,7 +3,7 @@
 #include <math.h>
 #include <string.h>
 #include "delVmin_opt.h"
-#include "integrator.h"
+
 double * delVmin_opt( double *y0, struct y_type y, double clearance, double accuracy, FILE * outfile1, double rE){
 
   int cond=0; //We dont want integrator to put anything in text file
