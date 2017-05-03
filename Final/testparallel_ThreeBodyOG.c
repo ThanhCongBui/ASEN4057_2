@@ -50,7 +50,7 @@ int main(int argc, char *argv[]){
   MPI_Comm_rank(MPI_COMM_WORLD,&rank);
   MPI_Comm_size(MPI_COMM_WORLD,&size);
 
-  printf("Using %d processes",size);
+  printf("Using %d processes\n",size);
   
   // Need to update delVmin and time_opt header files to reflect them taking in
   // 'int rank' as a variable to use in the parallel processes.
@@ -80,6 +80,7 @@ free(name);
 free(file);
 fclose(outfile);
 free(y0);
+ MPI_Finalize();
 return 0;
 }
 //---------------------------------END OF MAIN--------------------------------------------
@@ -115,55 +116,88 @@ automatically assign things to processes
 
    int increment = 200/(size*sqrt(2)); // This is necessary to properly step between processes. For 2 processes, increment = 100/sqrt(2). For 4, = 50/sqrt(2)
    
-   int startVal = -100/sqrt(2) + rank*increment; // This covers the -100 to 0 case, assigning those values to process 0
-   int endVal;
+   int startValx = -100/sqrt(2) + rank*increment; // This covers the -100 to 0 case, assigning those values to process 0
+   int startValy = startValx;
+   int endValx, endValy;
 
-   if (rank ~= (size-1)){
-     endVal = -100/sqrt(2) + (rank + 1)*increment; // Creates a mesh of 'increment' size throughout the processes. This is valid for processes not equal to the final process. 
+   if (rank != (size-1)){
+     endValx = -100/sqrt(2) + (rank + 1)*increment; // Creates a mesh of 'increment' size throughout the processes. This is valid for processes not equal to the final process. 
    }
    else{
-     endVal = 100/sqrt(2); // For the singular case in which rank == size-1 (we're at the last process), endVal is equal to the maximum range value.
+     endValx = 100/sqrt(2); // For the singular case in which rank == size-1 (we're at the last process), endVal is equal to the maximum range value.
    }
 
+   endValy = endValx;
+
+
+   // I think I want to write a for loop over startVal to endVal which will properly take care of parallelizing the code
+
+
+   for (startValx; startValx < endValx; startValx += accuracy){
+
+     yte[4] = y0[4] + delVx;
+
+     for (startValy; startValy < endValy; startValy += accuracy){
+
+       yte[5] = y0[5] + delVy;
+
+       er = integrator(yte,outfile1, clearance, cond);
+
+       if (er == 2){
+	 delV_mag = sqrt(pow(delVx,2) + pow(delVy,2));
+
+	 if (delV_mag <= delV_temp){
+
+	   delV_temp = delV_mag;
+	   delVx_temp = delVx;
+	   delVy_temp = delVy;
+	 }
+       }
+     }
+   }
+
+   int *nullVal = NULL;
+   //Need to do two gathers to get x and y values
+   MPI_Gather(&delVx_temp, 1, MPI_DOUBLE, nullVal, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+	 
    
-     
+   /*  
     for (delVx = -100/sqrt(2); delVx <= 0; delVx+=accuracy){
         yte[4] = y0[4] + delVx;
 	
         for (delVy = -100/sqrt(2); delVy <= 0; delVy+=accuracy){
             //alter initial conditions
             yte[5] = y0[5] + delVy;
-            er = integrator(a_yte, outfile1, clearance, cond);// calculate trajectory
+            er = integrator(yte, outfile1, clearance, cond);// calculate trajectory
 	    
             if(er == 2){ //discard if not returned to earth
-               a_delV_mag = sqrt(pow(delVx,2) + pow(delVy,2)); //calculate magnitude of delta v
+               delV_mag = sqrt(pow(delVx,2) + pow(delVy,2)); //calculate magnitude of delta v
 	       
-                if (a_delV_mag <= a_delV_temp){//if delta V is smaller than guess, set guess to the delta V
-                    a_delV_temp = a_delV_mag;
-                    a_delVx_temp = delVx;
-		    a_delVy_temp = delVy;
+                if (delV_mag <= delV_temp){//if delta V is smaller than guess, set guess to the delta V
+                    delV_temp = delV_mag;
+                    delVx_temp = delVx;
+		    delVy_temp = delVy;
                 }
             }
         }
     }
-    // 
+   */ 
 
 
     
 
     // 
    
-    free(a_yte);
-    free(b_yte);
+   free(yte);
     
-    fprintf(outfile1,"Minimum change in velocity to get to Earth is %.4f [m/s]\n", soln_delV_mag);
+    fprintf(outfile1,"Minimum change in velocity to get to Earth is %.4f [m/s]\n", delV_mag);
     double *delV = malloc(sizeof(double)*2);
-    delV[0] = soln_delVx;
-    delV[1] = soln_delVy;
+    delV[0] = delVx_temp;
+    delV[1] = delVy_temp;
     return delV;
 }
 //---------------------------------OPTIMIZATION(objective 2)---------------------------------------
-double * delVtime_opt(double *y0, struct y_type y,double clearance,double accuracy, FILE * outfile2, double rE){
+double * delVtime_opt(double *y0, struct y_type y,double clearance,double accuracy, FILE * outfile2, double rE, int rank, int size){
     int cond=0; //We dont want integrator to put anything in text file
     int er;
     double delVx,delVy,delV_mag,delVx_temp,delVy_temp;
