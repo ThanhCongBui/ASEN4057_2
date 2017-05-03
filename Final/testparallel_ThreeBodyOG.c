@@ -44,15 +44,23 @@ int main(int argc, char *argv[]){
 
   
   // ADDED PART TO CODE FOR PARALLEL//
-  int run, processID, numProcess;
+  int rank, size;
   // initialize the MPI stuff
-  run = MPI_Init(&argc, &argv);
+  MPI_Init(&argc, &argv); // Initialize MPI with the input number of processes
+  MPI_Comm_rank(MPI_COMM_WORLD,&rank);
+  MPI_Comm_size(MPI_COMM_WORLD,&size);
 
-    // We'll need to add command line arguments that take care of the number of processes
+  printf("Using %d processes",size);
+  
+  // Need to update delVmin and time_opt header files to reflect them taking in
+  // 'int rank' as a variable to use in the parallel processes.
+  // Need to manage command line inputs such that argv and argc correctly reflect
+  // input values for number of processes
+  //
   //Choose objective 
     if(objective == 1){
 	    outfile1 = fopen("outfile1","w");
-	    delV_min = delVmin_opt(y0, y,clearance,accuracy, outfile1, rE);
+	    delV_min = delVmin_opt(y0, y,clearance,accuracy, outfile1, rE, rank, size);
 	    fclose(outfile1);
 	    y0[4] += delV_min[0];
   	    y0[5] += delV_min[1];
@@ -61,8 +69,8 @@ int main(int argc, char *argv[]){
     }
     else if(objective == 2){
 	    outfile2 = fopen("outfile2","w");
-	    delV_min = delVtime_opt(y0, y,clearance,accuracy, outfile2, rE);
-	    fclose(outfile2);
+	    delV_min = delVtime_opt(y0, y,clearance,accuracy, outfile2, rE, rank, size);
+              fclose(outfile2);
 	    y0[4] += delV_min[0];
   	    y0[5] += delV_min[1];
 	    er = integrator(y0, outfile, clearance, 1);
@@ -79,56 +87,57 @@ return 0;
 
 
 //---------------------------------OPTIMIZATION(objective 1)---------------------------------------
-double * delVmin_opt(double *y0, struct y_type y,double clearance,double accuracy, FILE * outfile1, double rE){
+double * delVmin_opt(double *y0, struct y_type y,double clearance,double accuracy, FILE * outfile1, double rE, int rank, int size){
+
+  // Note the inclusion of MPI_Comm comm in the input. This is necessary to keep track
+  // of the process rank during parallel operations
     int cond=0; //We dont want integrator to put anything in text file
     int er;
-    double delVx,delVy,a_delV_mag, b_delV_mag,a_delVx_temp, b_delVx_temp,a_delVy_temp,b_delVy_temp, a_delV_temp, b_delV_temp;
-    double soln_delVx, soln_delVy, soln_delV_mag;
-    double a_delV_temp = 100;
-    double b_delV_temp = 100;
-    double * a_yte = malloc(sizeof(double)*8);
-    double * b_yte = malloc(sizeof(double)*8);
+    double delVx,delVy,delV_mag,delVx_temp,delVy_temp, delV_temp;
+    double delV_temp = 100;
+    double * yte = malloc(sizeof(double)*8);
     
-   a_yte[0] = y0[0];
-   a_yte[1] = y0[1];
-   a_yte[2] = y0[2];
-   a_yte[3] = y0[3];
-   a_yte[6] = y0[6];
-   a_yte[7] = y0[7];
-
-   b_yte[0] = y0[0];
-   b_yte[1] = y0[1];
-   b_yte[2] = y0[2];
-   b_yte[3] = y0[3];
-   b_yte[4] = y0[4];
-   b_yte[5] = y0[5];
-   b_yte[6] = y0[6];
-   b_yte[7] = y0[7];
+    
+   yte[0] = y0[0];
+   yte[1] = y0[1];
+   yte[2] = y0[2];
+   yte[3] = y0[3];
+   yte[6] = y0[6];
+   yte[7] = y0[7];
 
     /*This is the section that I'm going to parallelize.
     Goal is to make one process do -100/sqrt(2) to 0, and the other do 0 to 100/sqrt(2)
-    According to Google, this can be done by saying:
-
-    If process = 1
-    do some loop
-    else (i.e. process = 2)
-    do the other loop
-
-    Of course, the issues are going to be with syntax and data types
+After talking to Evans, this will be accomplished by iterating over the whole range and letting the for loop
+automatically assign things to processes
     */
-    // This loop will be the A loop, ranging from negative 100 / sqrt(2) to zero.
 
-   //Logic follows:
-   // IF PROCESSOR_RANK == 0
-   // DO 
+   // Note that the iteration range is -100/sqrt(2) to +100/sqrt(2) in searching for deltaV
+
+   int increment = 200/(size*sqrt(2)); // This is necessary to properly step between processes. For 2 processes, increment = 100/sqrt(2). For 4, = 50/sqrt(2)
+   
+   int startVal = -100/sqrt(2) + rank*increment; // This covers the -100 to 0 case, assigning those values to process 0
+   int endVal;
+
+   if (rank ~= (size-1)){
+     endVal = -100/sqrt(2) + (rank + 1)*increment; // Creates a mesh of 'increment' size throughout the processes. This is valid for processes not equal to the final process. 
+   }
+   else{
+     endVal = 100/sqrt(2); // For the singular case in which rank == size-1 (we're at the last process), endVal is equal to the maximum range value.
+   }
+
+   
+     
     for (delVx = -100/sqrt(2); delVx <= 0; delVx+=accuracy){
-        a_yte[4] = y0[4] + delVx;
+        yte[4] = y0[4] + delVx;
+	
         for (delVy = -100/sqrt(2); delVy <= 0; delVy+=accuracy){
             //alter initial conditions
-            a_yte[5] = y0[5] + delVy;
-            er = integrator(a_yte, outfile1, clearance, cond);// calculate trajectpory
+            yte[5] = y0[5] + delVy;
+            er = integrator(a_yte, outfile1, clearance, cond);// calculate trajectory
+	    
             if(er == 2){ //discard if not returned to earth
                a_delV_mag = sqrt(pow(delVx,2) + pow(delVy,2)); //calculate magnitude of delta v
+	       
                 if (a_delV_mag <= a_delV_temp){//if delta V is smaller than guess, set guess to the delta V
                     a_delV_temp = a_delV_mag;
                     a_delVx_temp = delVx;
@@ -137,46 +146,12 @@ double * delVmin_opt(double *y0, struct y_type y,double clearance,double accurac
             }
         }
     }
-    // DONE
+    // 
 
 
     
 
-    // IF PROCESSOR_RANK ~= 0
-    // DO
-    for (delVx = 0; delVx <= 100/sqrt(2); delVx+=accuracy){
-      b_yte[4] = y0[4] + delVx;
-      for (delVy = 0; delVy <= 100/sqrt(2); delVy+=accuracy){
-	b_yte[5] = y0[5] + delVy;
-	er = integrator(b_yte, outfile1, clearance, cond);
-
-	if (er == 2){
-	  b_delV_mag = sqrt(pow(delVx,2) + pow(delVy,2));
-	  if (b_delV_mag <= b_delV_temp){
-
-	    b_delV_temp = b_delV_mag;
-	    b_delVx_temp = delVx;
-	    b_delVy_temp = delVy;
-	  }
-	}
-      }
-    }
-
-    // Pick the smallest delta-V as the correct solution, and assign that value
-    // to soln_ variables. 
-
-    if (a_delV_temp < b_delV_temp){
-      soln_delVx = a_delVx;
-      soln_delVy = a_delVy;
-      soln_delV_mag = a_delV_temp;
-    }
-    else{
-      soln_delVx = b_delVx;
-      soln_delVy = b_delVy;
-      soln_delV_mag = b_delV_temp;
-    }
-    
-    
+    // 
    
     free(a_yte);
     free(b_yte);
