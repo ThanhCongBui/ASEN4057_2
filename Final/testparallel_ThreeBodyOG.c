@@ -155,45 +155,33 @@ automatically assign things to processes
        }
      }
    }
+   MPI_Comm comm;
+   double getX,gety,mag, *getxBuff, *getyBuff,*magBuff;
+   getxBuff = malloc(sizeof(double)*size); // Create an array that'll hold the calcualted dV's from each process
+   getyBuff = malloc(sizeof(double)*size);
+   magBuff = malloc(sizeof(double)*size);
+   //Need to do three gathers to get x and y and magnitude values
+   MPI_Gather(delVx_temp, 2, MPI_DOUBLE, getxBuff, 2, MPI_DOUBLE, getX, comm);
+   MPI_Gather(delVy_temp, 2, MPI_DOUBLE, getyBuff, 2, MPI_DOUBLE, getY, comm);
+   MPI_Gather(delV_temp, 2, MPI_DOUBLE, magBuff, 2, MPI_DOUBLE, mag, comm);
 
-   int *nullVal = NULL;
-   //Need to do two gathers to get x and y values
-   MPI_Gather(&delVx_temp, 1, MPI_DOUBLE, nullVal, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-	 
-   
-   /*  
-    for (delVx = -100/sqrt(2); delVx <= 0; delVx+=accuracy){
-        yte[4] = y0[4] + delVx;
-	
-        for (delVy = -100/sqrt(2); delVy <= 0; delVy+=accuracy){
-            //alter initial conditions
-            yte[5] = y0[5] + delVy;
-            er = integrator(yte, outfile1, clearance, cond);// calculate trajectory
-	    
-            if(er == 2){ //discard if not returned to earth
-               delV_mag = sqrt(pow(delVx,2) + pow(delVy,2)); //calculate magnitude of delta v
-	       
-                if (delV_mag <= delV_temp){//if delta V is smaller than guess, set guess to the delta V
-                    delV_temp = delV_mag;
-                    delVx_temp = delVx;
-		    delVy_temp = delVy;
-                }
-            }
-        }
-    }
-   */ 
-
-
-    
-
-    // 
-   
+   // Logic to pick the smallest resultant value
    free(yte);
+   double *delV = malloc(sizeof(double)*2);
+   
+   if(mag[0] < mag[1]){
+     fprintf(outfile1, "Minimum change in velocity to get to Earth is %.4f [m/s] \n", mag[0]);
+     delV[0] = getX[0];
+     delV[1] = getY[0];
+ 
+   }
+   else{
+     fprintf(outfile1, "Minimum chance in velocity to get to Earth is %.4f [m/s] \n", mag[1]);
+     delV[0] = getX[1];
+     delV[1] = getY[1];
+   }
     
-    fprintf(outfile1,"Minimum change in velocity to get to Earth is %.4f [m/s]\n", delV_mag);
-    double *delV = malloc(sizeof(double)*2);
-    delV[0] = delVx_temp;
-    delV[1] = delVy_temp;
+    
     return delV;
 }
 //---------------------------------OPTIMIZATION(objective 2)---------------------------------------
