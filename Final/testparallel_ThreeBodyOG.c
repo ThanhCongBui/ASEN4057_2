@@ -156,7 +156,7 @@ automatically assign things to processes
      }
    }
    MPI_Comm comm;
-   double getX,gety,mag, *getxBuff, *getyBuff,*magBuff;
+   double getX,getY,mag, *getxBuff, *getyBuff,*magBuff;
    getxBuff = malloc(sizeof(double)*size); // Create an array that'll hold the calcualted dV's from each process
    getyBuff = malloc(sizeof(double)*size);
    magBuff = malloc(sizeof(double)*size);
@@ -197,14 +197,39 @@ double * delVtime_opt(double *y0, struct y_type y,double clearance,double accura
     yte[3] = y0[3];
     yte[6] = y0[6];
     yte[7] = y0[7];
-    for (delVx=-100/sqrt(2);delVx<=100/sqrt(2);delVx+=accuracy){
+
+    // Parallel stuff for the time optimization. The overall logic is the same as the min opt.
+
+    int increment = 200/(size*sqrt(2));
+    int startValx = -100/sqrt(2) + rank*increment;
+    int startValy = startValx;
+    int endVal, endValy;
+
+    if (rank != (size-1)){
+      endValx = -100/sqrt(2) + (rank + 1)*increment;
+    }
+    else{
+      endValx = 100/sqrt(2);
+    }
+
+    endValy = endValx;
+
+    //For loop to search for a result. The code "automatically" parallelizes based on process
+    // rank as the loop cycles through.
+    for (startValx; startValx < endValx;startValx+=accuracy){
+      
         yte[4] = y0[4] + delVx;
-        for (delVy=-100/sqrt(2);delVy<=100/sqrt(2);delVy+=accuracy){
-            //alter initial conditions
+	
+        for (startValy; startValy < endValy; startValy += accuracy){
+	  
             yte[5] = y0[5] + delVy;
-            er = integrator(yte, outfile2, clearance, cond);// calculate trajectpory
+	    
+            er = integrator(yte, outfile2, clearance, cond);
+	    
             if(er == 2){ //discard if not returned to earth
+	      
                 delV_mag = sqrt(pow(delVx,2) + pow(delVy,2)); //calculate magnitude of delta v
+		
                 if (delV_mag <= delV_temp){//if delta V is smaller than guess, set guess to the delta V
                     delV_temp = delV_mag;
                     delVx_temp = delVx;
@@ -213,10 +238,36 @@ double * delVtime_opt(double *y0, struct y_type y,double clearance,double accura
             }
         }
     }
+
+    MPI_Comm comm;
+    double getX, getY, mag, *getxBuff, *getyBuff, *magBuff;
+
+    getxBuff = malloc(sizeof(double)*size);
+    getyBuff = malloc(sizeof(double)*size);
+    magBuff = malloc(sizeof(double)*size);
+
+    // Now MPI calls to get the values from each process
+
+    MPI_Gather(delVx_temp, 2, MPI_DOUBLE, getxBuff, 2, MPI_DOUBLE, getX, comm);
+    MPI_Gather(delVy_temp, 2, MPI_DOUBLE, getyBuff, 2, MPI_DOUBLE, getY, comm);
+    MPI_Gather(delV_temp, 2, MPI_DOUBLE, magBuff, 2, MPI_DOUBLE, mag, comm);
+
+    
     free(yte);
-    fprintf(outfile2,"Change in velocity to get to Earth in fastest time is %.4f [m/s]\n", delV_temp);
     double *delV = malloc(sizeof(double)*2);
-    delV[0] = delVx_temp;
-    delV[1] = delVy_temp;    
+    if (mag[0] < mag[1]){
+      fprintf(outfile1, "Change in velocity to get to Earth in fastest time is %.4f [m/s] \n",mag[0]);
+      delV[0] = getX[0];
+      delV[1] = getY[0];
+    }
+
+
+    else{
+      fprintf(outfile1, "Change in velocity to get to Earth in fastest time is %.4f [m/s] \n", mag[1]);
+      delV[0] = getX[1];
+      delV[1] = getY[1];
+    }
+    
+    
     return delV;
 }
