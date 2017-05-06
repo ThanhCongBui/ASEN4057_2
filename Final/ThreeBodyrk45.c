@@ -2,8 +2,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <mpi.h>
-
 //STRUCTS
 struct dydt_type{
     double xs_dot;
@@ -15,6 +13,7 @@ struct dydt_type{
     double vxm_dot;
     double vym_dot;
   };
+struct dydt_type dydt;
 struct y_type{
   double xs; //= y0[0];
   double ys; //= y0[1];
@@ -25,13 +24,12 @@ struct y_type{
   double vxm; //= y0[6];
   double vym; //= y0[7];
 };
-struct dydt_type dydt;
 struct y_type y;
 struct y_type ytemp1;
 struct y_type ytemp2;
 
 //FUNCTION PROTOTYPES
-double * delVmin_opt(double *y0, struct y_type y,double clearance,double accuracy, FILE * outfile, int rank, int size);
+double * delVmin_opt(double *y0, struct y_type y,double clearance,double accuracy, FILE * outfile);
 double * delVtime_opt(double *y0, struct y_type y,double clearance,double accuracy,FILE * outfile);
 int integrator(double *y0, FILE * outfile, double clearance, int cond);
 struct dydt_type dydtfun(struct dydt_type dydt, struct y_type y, double * masses);
@@ -63,24 +61,12 @@ int main(int argc, char *argv[]){
     y0[5] = 766.0444;
     y0[6] = -683.7457;
     y0[7] = 746.1774;
-    //Set up for optimizer and
+    //Set up for optimizer and choose objective
     double * delV_min;
     int er;
     int cond = 1; //We want integrator to write optimum data to a file
-
-    // ADDED PART TO CODE FOR PARALLEL//
-    int rank, size;
-    // initialize the MPI stuff
-    MPI_Init(&argc, &argv); // Initialize MPI with the input number of processes
-    MPI_Comm_rank(MPI_COMM_WORLD,&rank);
-    MPI_Comm_size(MPI_COMM_WORLD,&size);
-
-    printf("Using %d processes\n",size);
-
-    //choose objective
     if(objective == 1){
-        delV_min = delVmin_opt(y0, y,clearance,accuracy, outfile, rank, size);
-        MPI_Finalize();
+        delV_min = delVmin_opt(y0, y,clearance,accuracy, outfile);
         y0[4] += delV_min[0];
         y0[5] += delV_min[1];
         er = integrator(y0, outfile, clearance, cond);
@@ -88,7 +74,6 @@ int main(int argc, char *argv[]){
     }
     else if(objective == 2){
         delV_min = delVtime_opt(y0, y,clearance,accuracy, outfile);
-        MPI_Finalize();
         y0[4] += delV_min[0];
         y0[5] += delV_min[1];
         er = integrator(y0, outfile, clearance, cond);
@@ -102,7 +87,7 @@ int main(int argc, char *argv[]){
     return 0;
 }
 
-double * delVmin_opt(double *y0, struct y_type y,double clearance,double accuracy, FILE * outfile, int rank, int size){
+double * delVmin_opt(double *y0, struct y_type y,double clearance,double accuracy, FILE * outfile){
     int cond=0; //We dont want integrator to put anything in text file
     int er;
     double delVx,delVy,delV_mag,delVx_temp,delVy_temp;
@@ -114,59 +99,32 @@ double * delVmin_opt(double *y0, struct y_type y,double clearance,double accurac
     yte[3] = y0[3];
     yte[6] = y0[6];
     yte[7] = y0[7];
-    //setup parallelization
-    double increment = 200.0/size/sqrt(2.0); // This is necessary to properly step between processes. For 2 processes, increment = 100/sqrt(2). For 4, = 50/sqrt(2)
-    double startValx = -100.0/sqrt(2.0) + rank*increment - accuracy; // This covers the -100 to 0 case, assigning those values to process 0
-    double endValx;
-    if (rank != (size-1)){
-        endValx = -100.0/sqrt(2.0) + (rank + 1)*increment + accuracy; // Creates a mesh of 'increment' size throughout the processes. This is valid for processes not equal to the final process.
-    }
-    else{
-        endValx = 100.0/sqrt(2.0); // For the singular case in which rank == size-1 (we're at the last process), endVal is equal to the maximum range value.
-    }
-    double startValy = -100.0/sqrt(2.0);
-    double endValy = 100.0/sqrt(2.0);
-    // I think I want to write a for loop over startVal to endVal which will properly take care of parallelizing the code
-    for (startValx; startValx < endValx; startValx += accuracy){
-        yte[4] = y0[4] + startValx;
-        for (startValy; startValy <= endValy; startValy += accuracy){
-            yte[5] = y0[5] + startValy;
-            er = integrator(yte,outfile, clearance, cond);
-            if (er == 2){
-                delV_mag = sqrt(pow(startValx,2) + pow(startValy,2));
-                if (delV_mag <= delV_temp){
+    for (delVx=-100/sqrt(2);delVx<=100/sqrt(2);delVx+=accuracy){
+        yte[4] = y0[4] + delVx;
+        for (delVy=-100/sqrt(2);delVy<=100/sqrt(2);delVy+=accuracy){
+            //alter initial conditions
+            yte[5] = y0[5] + delVy;
+            er = integrator(yte, outfile, clearance, cond);// calculate trajectpory
+            if(er == 2){ //discard if not returned to earth
+                delV_mag = sqrt(pow(delVx,2) + pow(delVy,2)); //calculate magnitude of delta v
+                if (delV_mag <= delV_temp){//if delta V is smaller than guess, set guess to the delta V
                     delV_temp = delV_mag;
-                    delVx_temp = startValx;
-                    delVy_temp = startValy;
+                    delVx_temp = delVx;
+                    delVy_temp = delVy;
                 }
             }
         }
     }
-    double root, xBuff[size], yBuff[size],magBuff[size];
-    root = 0;
-    //Need to do three gathers to get x and y and magnitude values
-    MPI_Gather(&delVx_temp, 1, MPI_DOUBLE, &xBuff, 1, MPI_DOUBLE, root, MPI_COMM_WORLD);
-    MPI_Gather(&delVy_temp, 1, MPI_DOUBLE, &yBuff, 1, MPI_DOUBLE, root, MPI_COMM_WORLD);
-    MPI_Gather(&delV_temp, 1, MPI_DOUBLE, &magBuff, 1, MPI_DOUBLE, root, MPI_COMM_WORLD);
-    if(rank == 0){
-        int i;
-        for (i=0;i<size;i++){
-            if (magBuff[i] < delV_temp){
-                delV_temp = magBuff[i];
-                delVx_temp = xBuff[i];
-                delVy_temp = yBuff[i];
-            }
-        }
-        //print result to file
-        FILE * outfile1;
-        outfile1 = fopen("Vmin", "w");
-        fprintf(outfile1,"Minimum change in velocity to get to Earth is %.4f [m/s]\n", delV_temp);
-        fprintf(outfile1,"[ %.4f, %.4f] m/s\n",delVx_temp,delVy_temp);
-    }
+    free(yte);
+    //print result to file
+    FILE * outfile1;
+    outfile1 = fopen("Vmin", "w");
+    fprintf(outfile1,"Minimum change in velocity to get to Earth is %.4f [m/s]\n", delV_temp);
+    fprintf(outfile1,"[ %.4f, %.4f] m/s\n",delVx_temp,delVy_temp);
+    //return deltaV
     double *delV = malloc(sizeof(double)*2);
     delV[0] = delVx_temp;
     delV[1] = delVy_temp;
-    free(yte);
     return delV;
 }
 
